@@ -1,0 +1,24 @@
+name: Build & Publish Docker Image
+
+on:
+  workflow_dispatch:
+    branches: [ "main" ]
+    inputs:
+      version:
+        type: string
+        required: true
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and Publish Docker Image
+      env:
+        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+      run: |
+        TAG=${{inputs.version}}
+        docker build --tag bossanova456/chandler-cup-backend:${TAG} .
+        docker login -u bossanova456 -p $DOCKER_TOKEN 
+        docker push bossanova456/chandler-cup-backend:${TAG}
