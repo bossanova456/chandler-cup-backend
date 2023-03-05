@@ -11,15 +11,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: self-hosted
     steps:
     - uses: actions/checkout@v3
     - name: Build and Publish Docker Image
       env:
         DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-        DOCKER_TARGET_PLATFORM: linux/arm/v7
       run: |
-        echo ::set-output name=docker_platform::${DOCKER_TARGET_PLATFORM}
         TAG=${{inputs.version}}
         docker build --tag bossanova456/chandler-cup-backend:${TAG} .
         docker login -u bossanova456 -p $DOCKER_TOKEN 
