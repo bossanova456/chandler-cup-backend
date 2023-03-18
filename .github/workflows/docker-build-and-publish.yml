@@ -13,12 +13,8 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v3
     - name: Build and Publish Docker Image
-      env:
-        DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-      run: |
-        TAG=${{inputs.version}}
-        docker build --tag bossanova456/chandler-cup-backend:${TAG} .
-        docker login -u bossanova456 -p $DOCKER_TOKEN 
-        docker push bossanova456/chandler-cup-backend:${TAG}
+      uses: gh-actions/docker-build-and-publish
+      with:
+        app-name: chandler-cup-backend
+        version: ${{inputs.version}}
