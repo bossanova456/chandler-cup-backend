@@ -13,8 +13,8 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
+    - uses: bossanova456/gh-actions
     - name: Build and Publish Docker Image
-      uses: bossanova456/gh-actions
       with:
         app-name: chandler-cup-backend
         version: ${{inputs.version}}
