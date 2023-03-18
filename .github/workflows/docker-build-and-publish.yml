@@ -19,7 +19,7 @@ jobs:
         repository: bossanova456/gh-actions
         path: docker-build
     - name: Build and Publish Docker Image
-      uses: ./docker-build
+      uses: ./docker-build/.github/actions
       with:
         app-name: chandler-cup-backend
         version: ${{inputs.version}}
