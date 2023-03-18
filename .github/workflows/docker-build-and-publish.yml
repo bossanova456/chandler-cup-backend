@@ -16,7 +16,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        repository: bossanova456/gh-actions@v0.0.2
+        repository: bossanova456/gh-actions
         path: docker-build
     - name: Build and Publish Docker Image
       uses: ./docker-build
