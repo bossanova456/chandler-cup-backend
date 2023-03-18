@@ -14,7 +14,7 @@ jobs:
     runs-on: self-hosted
     steps:
     - name: Build and Publish Docker Image
-      uses: gh-actions/docker-build-and-publish@d1e17fe1a9ab9efd6e60e8af3970e637f384ec05
+      uses: gh-actions/docker-build-and-publish@v0.0.1
       with:
         app-name: chandler-cup-backend
         version: ${{inputs.version}}
