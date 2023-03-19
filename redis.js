@@ -74,7 +74,7 @@ const getMatchupsByWeek = async (weekNum) => {
 	const seasonYear = await getCurrentSeasonYear();
 
 	return executeQuery(client => {
-		return client.json.get('seasonYear:' + seasonYear + ':week:' + (weekNum.length < 2 ? '0' + weekNum : weekNum));
+		return client.json.get('seasonYear:' + seasonYear + ':week:' + (weekNum.length < 2 ? '0' + weekNum : weekNum) + ':matchup');
 	});
 }
 
