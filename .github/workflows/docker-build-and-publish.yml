@@ -20,5 +20,5 @@ jobs:
       uses: ./.github/actions
       with:
         app-name: chandler-cup-backend
-        version: ${{github.events.inputs.version}}
+        version: ${{inputs.version}}
         token: ${{ secrets.DOCKER_TOKEN }}
