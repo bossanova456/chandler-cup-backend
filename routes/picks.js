@@ -27,7 +27,7 @@ router.get('/year/:year/week/:week', function(req, res) {
 		.then(pickData => {
 			if (pickData) res.send(pickData);
 			else res.sendStatus(404);
-		})
+		});
 })
 
 module.exports = router;
