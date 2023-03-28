@@ -3,8 +3,8 @@ const router = express.Router();
 
 const { writeMatchupData, getMatchupsByWeek } = require('../redis');
 
-router.get('/:weekNum', function(req, res, next) {
-  getMatchupsByWeek(req.params.weekNum)
+router.get('/year/:year/week/:weekNum', function(req, res) {
+  getMatchupsByWeek(req.params.year, req.params.weekNum)
     .then(matchupData => {
       res.send(matchupData);
     })

@@ -34,9 +34,9 @@ const getKeys = async (keyPattern) => {
 	});
 }
 
-const getCurrentSeasonYear = async () => {
+const getCurrentSeason = async () => {
 	return executeQuery(client => {
-		return client.get('seasonYear');
+		return client.json.get('currentSeason');
 	});
 }
 
@@ -70,9 +70,7 @@ const writeMatchupData = async (seasonYear, weekNum, matchupData) => {
 	});
 }
 
-const getMatchupsByWeek = async (weekNum) => {
-	const seasonYear = await getCurrentSeasonYear();
-
+const getMatchupsByWeek = async (seasonYear, weekNum) => {
 	return executeQuery(client => {
 		return client.json.get('seasonYear:' + seasonYear + ':week:' + (weekNum.length < 2 ? '0' + weekNum : weekNum) + ':matchup');
 	});
@@ -137,7 +135,7 @@ const getPicksByYearAndWeek = async (seasonYear, week) => {
 }
 
 module.exports = {
-	getCurrentSeasonYear,
+	getCurrentSeason,
 	getTeamById,
 	writeTeamData,
 	getMatchupsByWeek,
