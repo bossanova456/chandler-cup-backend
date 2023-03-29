@@ -116,9 +116,11 @@ const getPicksByKeyPattern = async(keyPattern) => {
 		const picks = {};
 		keys.map(key => {
 			const user = key.split(':')[7];
+			const matchup = key.split(':')[5];
+			picks[user] = {};
 			client.json.get(key)
 				.then(pick => {
-					picks[user] = pick;
+					picks[user][matchup] = pick;
 				});
 		});
 
