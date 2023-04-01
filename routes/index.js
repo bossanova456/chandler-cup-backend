@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getCurrentSeason } = require('../redis');
+const { getCurrentSeason, getTeams } = require('../redis');
 
 /* GET home page. */
 router.get('/', function(req, res) {
@@ -13,6 +13,14 @@ router.get('/currentSeason', function(req, res) {
       if (seasonData) res.send(seasonData);
       else res.sendStatus(404);
     })
+});
+
+router.get('/teams', function(req, res) {
+  getTeams()
+    .then(teamsData => {
+      if (teamsData) res.send(teamsData);
+      else res.sendStatus(404);
+    });
 });
 
 module.exports = router;
