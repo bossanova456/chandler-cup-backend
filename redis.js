@@ -40,11 +40,22 @@ const getCurrentSeason = async () => {
 	});
 }
 
-// const getTeams = async () => {
-// 	return executeQuery(client => {
-// 		return client.json.get()
-// 	})
-// }
+const getTeams = async () => {
+	const keys = await getKeys('teams:*');
+
+	return executeQuery(client => {
+		const teams = {};
+		keys.map(key => {
+			const teamId = key.split(':')[1];
+			client.json.get(key)
+				.then(team => {
+					teams[teamId] = team;
+				});
+		});
+
+		return teams;
+	});
+}
 
 const getTeamById = async (teamId) => {
 	return executeQuery(client => {
@@ -116,9 +127,11 @@ const getPicksByKeyPattern = async(keyPattern) => {
 		const picks = {};
 		keys.map(key => {
 			const user = key.split(':')[7];
+			const matchup = key.split(':')[5];
+			if (!picks[user]) picks[user] = {};
 			client.json.get(key)
 				.then(pick => {
-					picks[user] = pick;
+					picks[user][matchup] = pick;
 				});
 		});
 
@@ -136,6 +149,7 @@ const getPicksByYearAndWeek = async (seasonYear, week) => {
 
 module.exports = {
 	getCurrentSeason,
+	getTeams,
 	getTeamById,
 	writeTeamData,
 	getMatchupsByWeek,
