@@ -1,5 +1,5 @@
 const express = require('express');
-const { getPickData, getPicksByMatchup, getPicksByYearAndWeek } = require('../redis');
+const { getPickData, getPicksByMatchup, getPicksByYearAndWeek, writePickData } = require('../redis');
 const router = express.Router();
 
 router.get('/year/:year/week/:week/matchup/:matchup', function(req, res) {
@@ -27,6 +27,15 @@ router.get('/year/:year/week/:week', function(req, res) {
 		.then(pickData => {
 			if (pickData) res.send(pickData);
 			else res.sendStatus(404);
+		});
+});
+
+router.post('/year/:year/week/:week/matchup/:matchup/user/:user', function(req, res) {
+	writePickData(req.params.year, req.params.week, req.params.user, req.params.matchup, req.body)
+		.then(data => {
+			res.send(data);
+		}, (err) => {
+			res.send(err);
 		});
 })
 
