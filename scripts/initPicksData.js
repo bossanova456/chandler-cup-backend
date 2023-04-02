@@ -1,5 +1,5 @@
-const { writePickData } = require('../redis');
-const { picksData } = require('../data/PickData');
+const { writePickData } = require('../src/redis');
+const { picksData } = require('../src/data/PickData');
 
 (async () => {
 	console.log(JSON.stringify(picksData));

@@ -50,6 +50,7 @@ const getTeams = async () => {
 			client.json.get(key)
 				.then(team => {
 					teams[teamId] = team;
+					teams[teamId].teamId = teamId;
 				});
 		});
 
@@ -114,7 +115,7 @@ const getPickData = async (seasonYear, week, matchup, user) => {
 	})
 }
 
-const writePickData = async (seasonYear, week, matchup, user, pick) => {
+const writePickData = async (seasonYear, week, user, matchup, pick) => {
 	return executeQuery(client => {
 		return client.json.set('seasonYear:' + seasonYear + ':week:' + week + ':matchup:' + matchup + ':user:' + user + ':pick', '$', pick);
 	});

@@ -1,5 +1,5 @@
-const { teamData } = require('../data/TeamData');
-const { writeTeamData } = require('../redis');
+const { teamData } = require('../src/data/TeamData');
+const { writeTeamData } = require('../src/redis');
 
 (async () => {
 	Object.keys(teamData).map(teamId => {
