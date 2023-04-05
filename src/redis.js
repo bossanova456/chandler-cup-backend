@@ -1,4 +1,5 @@
 const { createClient } = require('redis');
+const { matchupData } = require('./data/MatchupData');
 
 const executeQuery = async (fxn) => {
 	const client = createClient({
@@ -82,6 +83,12 @@ const writeMatchupData = async (seasonYear, weekNum, matchupData) => {
 	});
 }
 
+const writeMatchupDataByWeekAndId = async (seasonYear, weekNum, matchupId, matchupData) => {
+	await executeQuery(client => {
+		return client.json.set('seasonYear:' + seasonYear + ':week:' + weekNum + ':matchup', '$.' + matchupId, matchupData)
+	})
+}
+
 const getMatchupsByWeek = async (seasonYear, weekNum) => {
 	return executeQuery(client => {
 		return client.json.get('seasonYear:' + seasonYear + ':week:' + (weekNum.length < 2 ? '0' + weekNum : weekNum) + ':matchup');
@@ -155,6 +162,7 @@ module.exports = {
 	writeTeamData,
 	getMatchupsByWeek,
 	writeMatchupData,
+	writeMatchupDataByWeekAndId,
 	addUser,
 	getUsers,
 	writePickData,
