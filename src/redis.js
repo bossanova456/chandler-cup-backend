@@ -1,5 +1,4 @@
 const { createClient } = require('redis');
-const { matchupData } = require('./data/MatchupData');
 
 const executeQuery = async (fxn) => {
 	const client = createClient({
