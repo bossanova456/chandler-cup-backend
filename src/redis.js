@@ -40,6 +40,16 @@ const getCurrentSeason = async () => {
 	});
 }
 
+const getSchedule = async (year) => {
+	return executeQuery(client => {
+		return client.json.get('seasonYear:' + year + ':schedule');
+	});
+}
+
+/////////////////////
+// Teams
+/////////////////////
+
 const getTeams = async () => {
 	const keys = await getKeys('teams:*');
 
@@ -76,10 +86,20 @@ const writeTeamData = async (teamId, teamData) => {
 // 	})
 // }
 
+/////////////////////
+// Matchups
+/////////////////////
+
 const writeMatchupData = async (seasonYear, weekNum, matchupData) => {
 	await executeQuery(client => {
 		return client.json.set('seasonYear:' + seasonYear + ":week:" + weekNum + ':matchup', '$', matchupData);
 	});
+}
+
+const writeMatchupDataByWeekAndId = async (seasonYear, weekNum, matchupId, matchupData) => {
+	await executeQuery(client => {
+		return client.json.set('seasonYear:' + seasonYear + ':week:' + weekNum + ':matchup', '$.' + matchupId, matchupData)
+	})
 }
 
 const getMatchupsByWeek = async (seasonYear, weekNum) => {
@@ -87,6 +107,10 @@ const getMatchupsByWeek = async (seasonYear, weekNum) => {
 		return client.json.get('seasonYear:' + seasonYear + ':week:' + (weekNum.length < 2 ? '0' + weekNum : weekNum) + ':matchup');
 	});
 }
+
+/////////////////////
+// Users
+/////////////////////
 
 const getUsers = async (seasonYear) => {
 	return executeQuery(client => {
@@ -108,6 +132,10 @@ const addUser = async (seasonYear, userName) => {
 		return client.json.arrAppend('users', '$.' + seasonYear, userName);
 	});
 }
+
+/////////////////////
+// Picks
+/////////////////////
 
 const getPickData = async (seasonYear, week, matchup, user) => {
 	return executeQuery(client => {
@@ -150,11 +178,13 @@ const getPicksByYearAndWeek = async (seasonYear, week) => {
 
 module.exports = {
 	getCurrentSeason,
+	getSchedule,
 	getTeams,
 	getTeamById,
 	writeTeamData,
 	getMatchupsByWeek,
 	writeMatchupData,
+	writeMatchupDataByWeekAndId,
 	addUser,
 	getUsers,
 	writePickData,
