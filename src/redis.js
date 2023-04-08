@@ -108,6 +108,11 @@ const getMatchupsByWeek = async (seasonYear, weekNum) => {
 	});
 }
 
+const getMatchupWeeks = async (seasonYear) => {
+	const keys = await getKeys('seasonYear:' + seasonYear + ':week:*:matchup');
+	return keys.map(key => key.split(':')[3]);
+}
+
 /////////////////////
 // Users
 /////////////////////
@@ -183,6 +188,7 @@ module.exports = {
 	getTeamById,
 	writeTeamData,
 	getMatchupsByWeek,
+	getMatchupWeeks,
 	writeMatchupData,
 	writeMatchupDataByWeekAndId,
 	addUser,
