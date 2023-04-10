@@ -80,12 +80,6 @@ const writeTeamData = async (teamId, teamData) => {
 	});
 }
 
-// const addNewWeek = async() => {
-// 	await executeQuery(client => {
-// 		const totalWeeks = client.keys()
-// 	})
-// }
-
 /////////////////////
 // Matchups
 /////////////////////
@@ -106,6 +100,17 @@ const getMatchupsByWeek = async (seasonYear, weekNum) => {
 	return executeQuery(client => {
 		return client.json.get('seasonYear:' + seasonYear + ':week:' + (weekNum.length < 2 ? '0' + weekNum : weekNum) + ':matchup');
 	});
+}
+
+const getMatchupWeeks = async (seasonYear) => {
+	const keys = await getKeys('seasonYear:' + seasonYear + ':week:*:matchup');
+	return keys.map(key => key.split(':')[3]);
+}
+
+const addNewWeek = async(seasonYear, newWeek) => {
+	await executeQuery(client => {
+		return client.json.set('seasonYear:' + seasonYear + ':week:' + newWeek + ':matchup', '$', {});
+	})
 }
 
 /////////////////////
@@ -183,6 +188,8 @@ module.exports = {
 	getTeamById,
 	writeTeamData,
 	getMatchupsByWeek,
+	getMatchupWeeks,
+	addNewWeek,
 	writeMatchupData,
 	writeMatchupDataByWeekAndId,
 	addUser,
