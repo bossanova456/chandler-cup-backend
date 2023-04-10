@@ -1,12 +1,19 @@
 const express = require('express');
 const router = express.Router();
 
-const { writeMatchupDataByWeekAndId, getMatchupsByWeek, getMatchupWeeks } = require('../redis');
+const { writeMatchupDataByWeekAndId, getMatchupsByWeek, getMatchupWeeks, addNewWeek } = require('../redis');
 
 router.get('/year/:year/weeks', function(req, res) {
   getMatchupWeeks(req.params.year)
     .then(weekData => {
       res.send(weekData);
+    })
+})
+
+router.post('/year/:year/addWeek/:newWeek', function(req, res) {
+  addNewWeek(req.params.year, req.params.newWeek)
+    .then(response => {
+      res.send(response);
     })
 })
 
