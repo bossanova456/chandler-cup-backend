@@ -1,6 +1,6 @@
 FROM node:latest
 
-RUN apt update && apt upgrade -y
+RUN apt-get update && apt-get upgrade -y
 
 WORKDIR /app
 COPY . .
