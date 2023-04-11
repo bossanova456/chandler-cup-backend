@@ -1,7 +1,6 @@
 name: Build & Publish
 
 on:
-  workflow_dispatch:
   push:
     branches: [ "main" ]
 
@@ -52,3 +51,4 @@ jobs:
           platforms: linux/arm64
           tags: |
             bossanova456/chandler-cup-backend:latest-arm64
+            bossanova456/chandler-cup-backend:${{ steps.version.outputs.version }}-arm64
