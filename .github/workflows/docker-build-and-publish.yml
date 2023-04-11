@@ -1,6 +1,7 @@
 name: Build & Publish
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
 
@@ -18,4 +19,6 @@ jobs:
       uses: docker/build-push-action@v4
       with:
         push: true
-        tags: bossanova456/chandler-cup-backend:latest
+        platforms: linux/arm64
+        tags: |
+          bossanova456/chandler-cup-backend:latest-arm64
