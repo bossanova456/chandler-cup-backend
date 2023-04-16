@@ -1,38 +1,4 @@
-const { createClient } = require('redis');
-
-const executeQuery = async (fxn) => {
-	const client = createClient({
-		url: 'redis://default:@192.168.1.50:6379'
-	});
-
-	client.on('error', err => console.log('Redis client error', err));
-
-	await client.connect();
-	const ret = await fxn(client);
-	await client.quit();
-
-	return ret;
-}
-
-const createIndex = async (key, schema) => {
-	return executeQuery(client => {
-		try {
-			return client.ft.create('idx:' + key, schema)
-		} catch(e) {
-			if (e.message === 'Index already exists') {
-				console.log('Index exists already, skipped creation.');
-			} else {
-				console.error(e);
-			}
-		}
-	});
-}
-
-const getKeys = async (keyPattern) => {
-	return executeQuery(client => {
-		return client.keys(keyPattern);
-	});
-}
+const { executeQuery, getKeys } = require('../util/redisUtil');
 
 const getCurrentSeason = async () => {
 	return executeQuery(client => {
@@ -50,8 +16,8 @@ const getSchedule = async (year) => {
 // Teams
 /////////////////////
 
-const getTeams = async () => {
-	const keys = await getKeys('teams:*');
+const getTeams = async (client = null) => {
+	const keys = await getKeys('teams:*', client);
 
 	return executeQuery(client => {
 		const teams = {};
@@ -65,7 +31,7 @@ const getTeams = async () => {
 		});
 
 		return teams;
-	});
+	}, client);
 }
 
 const getTeamById = async (teamId) => {
@@ -84,33 +50,33 @@ const writeTeamData = async (teamId, teamData) => {
 // Matchups
 /////////////////////
 
-const writeMatchupData = async (seasonYear, weekNum, matchupData) => {
+const writeMatchupData = async (seasonYear, weekNum, matchupData, client = null) => {
 	await executeQuery(client => {
 		return client.json.set('seasonYear:' + seasonYear + ":week:" + weekNum + ':matchup', '$', matchupData);
-	});
+	}, client);
 }
 
-const writeMatchupDataByWeekAndId = async (seasonYear, weekNum, matchupId, matchupData) => {
+const writeMatchupDataByWeekAndId = async (seasonYear, weekNum, matchupId, matchupData, client = null) => {
 	await executeQuery(client => {
 		return client.json.set('seasonYear:' + seasonYear + ':week:' + weekNum + ':matchup', '$.' + matchupId, matchupData)
-	})
+	}, client)
 }
 
-const getMatchupsByWeek = async (seasonYear, weekNum) => {
+const getMatchupsByWeek = async (seasonYear, weekNum, client = null) => {
 	return executeQuery(client => {
 		return client.json.get('seasonYear:' + seasonYear + ':week:' + (weekNum.length < 2 ? '0' + weekNum : weekNum) + ':matchup');
-	});
+	}, client);
 }
 
-const getMatchupWeeks = async (seasonYear) => {
-	const keys = await getKeys('seasonYear:' + seasonYear + ':week:*:matchup');
+const getMatchupWeeks = async (seasonYear, client = null) => {
+	const keys = await getKeys('seasonYear:' + seasonYear + ':week:*:matchup', client);
 	return keys.map(key => key.split(':')[3]);
 }
 
-const addNewWeek = async(seasonYear, newWeek) => {
+const addNewWeek = async(seasonYear, newWeek, client = null) => {
 	await executeQuery(client => {
 		return client.json.set('seasonYear:' + seasonYear + ':week:' + newWeek + ':matchup', '$', {});
-	})
+	}, client);
 }
 
 /////////////////////
@@ -182,6 +148,7 @@ const getPicksByYearAndWeek = async (seasonYear, week) => {
 }
 
 module.exports = {
+	executeQuery,
 	getCurrentSeason,
 	getSchedule,
 	getTeams,
