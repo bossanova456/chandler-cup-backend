@@ -1,0 +1,17 @@
+name: 'Build and Test'
+
+on:
+  push:
+    branches-ignore:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        shell: bash
+        run: npm install
+      - name: Test
+        shell: bash
+        run: npm test
