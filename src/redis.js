@@ -108,20 +108,20 @@ const addUser = async (seasonYear, userName) => {
 // Picks
 /////////////////////
 
-const getPickData = async (seasonYear, week, matchup, user) => {
+const getPickData = async (seasonYear, week, matchup, user, client = null) => {
 	return executeQuery(client => {
 		return client.json.get('seasonYear:' + seasonYear + ':week:' + week + ':matchup:' + matchup + ':user:' + user + ':pick');
-	})
+	}, client);
 }
 
-const writePickData = async (seasonYear, week, user, matchup, pick) => {
+const writePickData = async (seasonYear, week, user, matchup, pick, client = null) => {
 	return executeQuery(client => {
 		return client.json.set('seasonYear:' + seasonYear + ':week:' + week + ':matchup:' + matchup + ':user:' + user + ':pick', '$', pick);
-	});
+	}, client);
 }
 
-const getPicksByKeyPattern = async(keyPattern) => {
-	const keys = await getKeys(keyPattern);
+const getPicksByKeyPattern = async(keyPattern, client = null) => {
+	const keys = await getKeys(keyPattern, client);
 	
 	return executeQuery(client => {
 		const picks = {};
@@ -136,15 +136,15 @@ const getPicksByKeyPattern = async(keyPattern) => {
 		});
 
 		return picks;
-	});
+	}, client);
 }
 
-const getPicksByMatchup = async (seasonYear, week, matchup) => {
-	return getPicksByKeyPattern('seasonYear:' + seasonYear + ':week:' + week + ':matchup:' + matchup + ':user:*:pick');
+const getPicksByMatchup = async (seasonYear, week, matchup, client = null) => {
+	return getPicksByKeyPattern('seasonYear:' + seasonYear + ':week:' + week + ':matchup:' + matchup + ':user:*:pick', client);
 }
 
-const getPicksByYearAndWeek = async (seasonYear, week) => {
-	return getPicksByKeyPattern('seasonYear:' + seasonYear + ':week:' + week + ':matchup:*:user:*:pick');
+const getPicksByYearAndWeek = async (seasonYear, week, client = null) => {
+	return getPicksByKeyPattern('seasonYear:' + seasonYear + ':week:' + week + ':matchup:*:user:*:pick', client);
 }
 
 module.exports = {
