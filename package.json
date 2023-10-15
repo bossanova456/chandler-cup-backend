@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node src/app.js",
-    "test": "jest"
+    "test": "jest",
+    "build": "npm install --production"
   },
   "dependencies": {
     "cors": "^2.8.5",
