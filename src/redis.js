@@ -92,15 +92,21 @@ const getUsers = async (seasonYear) => {
 }
 
 const addUser = async (seasonYear, userName) => {
-	const users = (await getUsers(seasonYear))[0];
+	const users = (await getUsers(seasonYear));
 
 	return executeQuery(client => {
 		// Check if user already exists
-		if (users.filter(user => user.name === userName.name).length !== 0) {
+		if (users && users.filter(user => user.name === userName.name).length !== 0) {
 			return "User " + userName + " already exists";
 		}
 
-		return client.json.arrAppend('users', '$.' + seasonYear, userName);
+		if (users === null) {
+			const initUsers = {};
+			initUsers[seasonYear] = [ userName ];
+			return client.json.set('users', '$.', initUsers);
+		} else {
+			return client.json.arrAppend('users', '$.' + seasonYear, userName);
+		}
 	});
 }
 

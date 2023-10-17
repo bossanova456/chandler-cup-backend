@@ -1,13 +1,13 @@
 const { expect, test } =  require('@jest/globals');
 const redisMock = require('redis-mock');
 
-const { getPicksByMatchup, getPicksByYearAndWeek, getPickData, writePickData } = require('../src/redis');
+const { getUsers, addUser } = require('../src/redis');
 
 const { getKeys, executeQuery } = require('../util/redisUtil');
 jest.mock('../util/redisUtil');
 
-describe('Pick data tests', () => {
-	let pickData, matchupData;
+describe('Users', () => {
+	let usersData;
 	const mockClient = redisMock.createClient();
 
 	executeQuery.mockImplementation(async (fxn, client = null) => {
@@ -15,21 +15,21 @@ describe('Pick data tests', () => {
 	}, mockClient);
 
 	getKeys.mockImplementation(async (keyPattern, client) => {
-		return Promise.resolve(Object.keys(pickData));
+		return Promise.resolve(Object.keys(usersData));
 	});
 
 	beforeEach(() => {
 		mockClient.json = {
 			get: async (key) => {
-				return Promise.resolve(pickData[key]);
+				return Promise.resolve(usersData[key]);
 			},
 			set: async (key, path, data) => {
-				pickData[key] = data;
-				return Promise.resolve(pickData);
+				usersData[key] = data;
+				return Promise.resolve(usersData);
 			}
 		};
 
-		pickData = {
+		usersData = {
 			"seasonYear:2022:week:01:matchup:0102:user:sharon:pick" : {
 				"pick": "underdog",
 				"last_upd_ts": "01-01-1970 01:00:00.000"
@@ -45,7 +45,7 @@ describe('Pick data tests', () => {
 		};
 	});
 
-	test('Should return pick data for a given user, year, week, and matchup', async () => {
+	test('Should return list of users', async () => {
 		const pickData = await getPickData('2022', '01', '0102', 'sharon', mockClient);
 
 		expect(pickData).not.toBeNull();
@@ -56,53 +56,7 @@ describe('Pick data tests', () => {
 		});
 	})
 
-	test('Should return pick data for a given year and week', async () => {
-		const picks = await getPicksByYearAndWeek('2022', '01', mockClient);
-
-		expect(picks).not.toBeNull();
-		expect(picks).not.toBeUndefined();
-		expect(picks).toEqual({
-			"sharon": {
-				"0102" : {
-					"pick": "underdog",
-					"last_upd_ts": "01-01-1970 01:00:00.000"
-				},
-				"0304": {
-					"pick": "underdog",
-					"last_upd_ts": "01-01-1970 01:00:00.000"
-				},
-				"0506": {
-					"pick": "favored",
-					"last_upd_ts": "01-01-1970 01:00:00.000"
-				}
-			}
-		});
-	})
-
-	test('Should return pick data for all users for a given year, week, and matchup', async () => {
-		const picks = await getPicksByMatchup('2022', '01', '0102', mockClient);
-
-		expect(picks).not.toBeNull();
-		expect(picks).not.toBeUndefined();
-		expect(picks).toEqual({
-			"sharon": {
-				"0102" : {
-					"pick": "underdog",
-					"last_upd_ts": "01-01-1970 01:00:00.000"
-				},
-				"0304": {
-					"pick": "underdog",
-					"last_upd_ts": "01-01-1970 01:00:00.000"
-				},
-				"0506": {
-					"pick": "favored",
-					"last_upd_ts": "01-01-1970 01:00:00.000"
-				}
-			}
-		})
-	})
-
-	test('Should write new pick data', async () => {
+	test('Should add new user', async () => {
 		// Pick data for this matchup doesn't exist, so it should throw an exception
 		expect(await getPickData('2022', '01', '0708', 'sharon', mockClient)).toBeUndefined();
 
