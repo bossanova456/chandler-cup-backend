@@ -1,17 +1,6 @@
 const express = require('express');
 const { getUsers, addUser, getCurrentSeasonYear } = require('../redis');
 const router = express.Router();
-
-router.get('/', function(req, res) {
-	getCurrentSeasonYear()
-		.then(seasonYear => {
-			getUsers(seasonYear)
-				.then(usersData => {
-				res.send(usersData[0]);
-				});
-			}
-		);
-	});
 	
 router.get('/:seasonYear', function(req, res) {
 	getUsers(req.params.seasonYear)
@@ -21,8 +10,8 @@ router.get('/:seasonYear', function(req, res) {
 		});
 });
 	
-router.post('/addUser/:userName', function(req, res) {
-	addUser("2022", {
+router.post('/:seasonYear/addUser/:userName', function(req, res) {
+	addUser(req.params.seasonYear, {
 		name: req.params.userName
 	})
 	.then(() => {
