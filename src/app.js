@@ -7,6 +7,7 @@ const matchupsRouter = require('./routes/matchups');
 const teamsRouter = require('./routes/teams');
 const picksRouter = require('./routes/picks');
 const usersRouter = require('./routes/users');
+const scoresRouter = require('./routes/scores')
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use('/matchups', matchupsRouter);
 app.use('/teams', teamsRouter);
 app.use('/picks', picksRouter);
 app.use('/users', usersRouter);
+app.use('/scores', scoresRouter);
 
 const server = app.listen(3001, function () {
 	// const host = server.address().address

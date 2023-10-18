@@ -1,4 +1,4 @@
-const { executeQuery, getKeys } = require('../util/redisUtil');
+const { executeQuery, getKeys, executeQueryGlobalClient } = require('../util/redisUtil');
 
 const getCurrentSeason = async () => {
 	return executeQuery(client => {
@@ -83,8 +83,9 @@ const addNewWeek = async(seasonYear, newWeek, client = null) => {
 // Users
 /////////////////////
 
+// Fix users db logic
 const getUsers = async (seasonYear) => {
-	return executeQuery(client => {
+	return executeQueryGlobalClient(client => {
 		return client.json.get('users', {
 			path: '$.' + seasonYear
 		});
@@ -94,7 +95,7 @@ const getUsers = async (seasonYear) => {
 const addUser = async (seasonYear, userName) => {
 	const users = (await getUsers(seasonYear));
 
-	return executeQuery(client => {
+	return executeQueryGlobalClient(client => {
 		// Check if user already exists
 		if (users && users.filter(user => user.name === userName.name).length !== 0) {
 			return "User " + userName + " already exists";
