@@ -45,8 +45,19 @@ describe('Users', () => {
 		};
 	});
 
+	// test('Should return list of users', async () => {
+	// 	const pickData = await getPickData('2022', '01', '0102', 'sharon', mockClient);
+
+	// 	expect(pickData).not.toBeNull();
+	// 	expect(pickData).not.toBeUndefined();
+	// 	expect(pickData).toEqual({
+	// 		"pick": "underdog",
+	// 		"last_upd_ts": "01-01-1970 01:00:00.000"
+	// 	});
+	// })
+
 	test('Should return list of users', async () => {
-		const pickData = await getPickData('2022', '01', '0102', 'sharon', mockClient);
+		const userData = await getUsers('2022', mockClient);
 
 		expect(pickData).not.toBeNull();
 		expect(pickData).not.toBeUndefined();
